@@ -45,6 +45,7 @@ exports.handler = async (event, context) => {
     const longLinkField = getEnv('AIRTABLE_LONG_LINK_FIELD', 'Long Link')
     const Airtable = require('airtable')
     log(`Attempting to get long link for code "${code}"`)
+    log(`{${shortCodeField}} = "${code}"`)
     const result = await new Airtable({apiKey})
       .base(base)(table)
       .select({
@@ -53,6 +54,7 @@ exports.handler = async (event, context) => {
         filterByFormula: `{${shortCodeField}} = "${code}"`,
       })
       .firstPage()
+    log(result)
     const longLink = result[0].get(longLinkField)
     if (longLink) {
       fakeCache[code] = longLink
